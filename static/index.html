@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NL2SQL — AI-Powered Database Chat</title>
+    <meta name="description" content="Ask questions about clinic data in plain English and get instant SQL-powered answers.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+    <!-- Animated background orbs -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">NL2SQL</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-label">Quick Questions</h3>
+                <div class="quick-questions">
+                    <button class="quick-q" data-question="How many patients do we have?">
+                        <span class="quick-q-icon">👥</span>
+                        Patient count
+                    </button>
+                    <button class="quick-q" data-question="List all doctors and their specializations">
+                        <span class="quick-q-icon">🩺</span>
+                        Doctor list
+                    </button>
+                    <button class="quick-q" data-question="What is the total revenue?">
+                        <span class="quick-q-icon">💰</span>
+                        Total revenue
+                    </button>
+                    <button class="quick-q" data-question="Which city has the most patients?">
+                        <span class="quick-q-icon">🏙️</span>
+                        Top city
+                    </button>
+                    <button class="quick-q" data-question="Show revenue by doctor">
+                        <span class="quick-q-icon">📊</span>
+                        Revenue by doctor
+                    </button>
+                    <button class="quick-q" data-question="Top 5 patients by spending">
+                        <span class="quick-q-icon">🏆</span>
+                        Top spenders
+                    </button>
+                    <button class="quick-q" data-question="Show unpaid invoices">
+                        <span class="quick-q-icon">📋</span>
+                        Unpaid invoices
+                    </button>
+                    <button class="quick-q" data-question="Revenue trend by month">
+                        <span class="quick-q-icon">📈</span>
+                        Revenue trend
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="health-status" id="healthStatus">
+                    <div class="health-dot"></div>
+                    <span>Checking...</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="chat-header">
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+                <div class="header-info">
+                    <h1>Clinic Database Assistant</h1>
+                    <p>Ask questions about patients, doctors, appointments & more</p>
+                </div>
+                <button class="clear-btn" id="clearChat" title="Clear chat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3,6 5,6 21,6"/>
+                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                    </svg>
+                </button>
+            </header>
+
+            <!-- Messages -->
+            <div class="chat-messages" id="chatMessages">
+                <div class="welcome-card">
+                    <div class="welcome-icon">
+                        <svg viewBox="0 0 48 48" fill="none">
+                            <rect width="48" height="48" rx="12" fill="url(#grad1)"/>
+                            <path d="M15 20h18M15 26h12M15 32h15" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="34" cy="14" r="6" fill="#6ee7b7"/>
+                            <path d="M32 14l1.5 1.5L36 12" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                            <defs>
+                                <linearGradient id="grad1" x1="0" y1="0" x2="48" y2="48">
+                                    <stop stop-color="#8b5cf6"/>
+                                    <stop offset="1" stop-color="#3b82f6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h2>Welcome to NL2SQL</h2>
+                    <p>Ask me anything about the clinic database in plain English. I'll convert your question to SQL, run it, and show you the results with charts.</p>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="chat-input-area">
+                <form id="chatForm" class="chat-form">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="questionInput" 
+                            placeholder="Ask a question about the clinic database..." 
+                            rows="1"
+                            maxlength="500"
+                            autofocus
+                        ></textarea>
+                        <button type="submit" class="send-btn" id="sendBtn" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22,2 15,22 11,13 2,9"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="input-hint">Press Enter to send · Shift+Enter for new line</p>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
