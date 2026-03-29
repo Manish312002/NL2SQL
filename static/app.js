@@ -1,7 +1,3 @@
-// =====================
-// NL2SQL Chat Application
-// =====================
-
 const API_BASE = 'http://localhost:8000';
 
 const chatMessages = document.getElementById('chatMessages');
@@ -181,11 +177,11 @@ async function handleSend() {
         } else { 
             addErrorMessage(`Connection failed: ${err.message}`); 
         }
+    } finally {
+        isProcessing = false;
+        sendBtn.disabled = !questionInput.value.trim();
+        questionInput.focus();
     }
-
-    isProcessing = false;
-    sendBtn.disabled = !questionInput.value.trim();
-    questionInput.focus();
 }
 
 // =====================
