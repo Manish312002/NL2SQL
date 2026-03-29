@@ -153,8 +153,7 @@ NL2SQL/
 ├── main.py              # FastAPI application & API endpoints
 ├── vanna_setup.py       # Vanna 2.0 Agent initialization
 ├── setup_database.py    # Database creation + dummy data
-├── seed_memory.py       # Agent memory seeding (20 Q&A pairs)
-├── test_queries.py      # 20-question benchmark test
+├── seed_memory.py       # Agent memory seeding
 ├── static/              # Frontend web assets
 │   ├── index.html       # Chat interface UI
 │   ├── style.css        # Premium dark theme styling
